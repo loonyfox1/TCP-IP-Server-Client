@@ -7,6 +7,7 @@ INCLUDE	:= include
 LIB		:= lib
 
 LIBRARIES	:=
+CONFIGFILE := config.ini
 
 ifeq ($(OS),Windows_NT)
 EXECUTABLE	:= main.exe
@@ -20,7 +21,7 @@ clean:
 	$(RM) $(BIN)/$(EXECUTABLE)
 
 run: all
-	./$(BIN)/$(EXECUTABLE)
+	./$(BIN)/$(EXECUTABLE) $(CONFIGFILE) 
 
 $(BIN)/$(EXECUTABLE): $(SRC)/*
 	$(CC) $(C_FLAGS) -I$(INCLUDE) -L$(LIB) $^ -o $@ $(LIBRARIES) -g

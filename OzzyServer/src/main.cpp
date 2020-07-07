@@ -1,18 +1,51 @@
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
 #include "server.h"
 
-#define CONFIG_FILE "config.ini"
+typedef struct {
+	unsigned port;
+} config_args_t;
+
+config_args_t readConfig(string filename);
 
 int main(int argc, char ** argv) {
-
-	OzzyServer* server = new OzzyServer();
+	config_args_t cnfg = readConfig(argv[1]);
+	OzzyServer* server = new OzzyServer(cnfg.port);
+	
 	delete server;
-
 	cout << "Server done!" << endl;
 
 	return 0;
 }
 
+config_args_t readConfig(string filename){
+	ifstream configfile(filename);
+	if (!configfile.is_open()) {
+		error("Could not open config file");
+	}
+	else {
+		config_args_t cnfg;
+		string line, identifier, value;
+		size_t sv;
+		char* pEnd;
+
+		while (getline(configfile, line)) {
+			sv = line.find('=');
+			identifier = line.substr(0, sv - 1);
+			value = "";
+			if (sv != string::npos) {
+				value = line.substr(sv + 2, line.find('\n') - sv - 1);
+			}
+
+			if (identifier == "PORT") cnfg.port = strtod(value.c_str(), &pEnd);
+		}
+		configfile.close();
+		if (cnfg.port == 0)
+			cout << "Warning: " << "Could not read PORT in config file. PORT is default 0" << endl;
+
+		return cnfg;
+	}
+}
