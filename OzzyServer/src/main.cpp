@@ -14,7 +14,8 @@ config_args_t readConfig(string filename);
 int main(int argc, char ** argv) {
 	config_args_t cnfg = readConfig(argv[1]);
 	OzzyServer* server = new OzzyServer(cnfg.port);
-	
+	server->run();
+
 	delete server;
 	cout << "Server done!" << endl;
 

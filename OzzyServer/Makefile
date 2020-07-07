@@ -24,4 +24,4 @@ run: all
 	./$(BIN)/$(EXECUTABLE) $(CONFIGFILE) 
 
 $(BIN)/$(EXECUTABLE): $(SRC)/*
-	$(CC) $(C_FLAGS) -I$(INCLUDE) -L$(LIB) $^ -o $@ $(LIBRARIES) -g
+	$(CC) $(C_FLAGS) -I$(INCLUDE) -L$(LIB) $^ -o $@ $(LIBRARIES) -g -pthread

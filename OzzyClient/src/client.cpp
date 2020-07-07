@@ -48,17 +48,17 @@ void OzzyClient::sendRequst(const double number) {
 }
 
 void OzzyClient::getResult(){
-    size_t size = 0;
-    recv(sock, &size, sizeof(size_t),0);
+    int size = 0;
+    recv(sock, &size, sizeof(size_t), 0);
     N = size / sizeof(double);
 
-    printf("Get %d\n", size);
+    cout << "Get " << size << " bytes" << endl;
     
     data = new double [N];
     int nBytes = recv(sock, &data[0], size, 0);
     
-    if (nBytes != size){
-        error("Received incorrect number of bytes");
+    if (nBytes <= 0){
+        error("Failed receive data");
     }
 }
 
@@ -66,6 +66,7 @@ void OzzyClient::writeResultToFile(string filename){
     ofstream file(filename);
     file.write(reinterpret_cast<const char*>(&data[0]), sizeof(double) * N);
     file.flush();
+    cout << "Write to file " << filename.c_str() << " " << N << " samples" << endl;
 }
 
 

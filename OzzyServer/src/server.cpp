@@ -24,31 +24,60 @@ void OzzyServer::initSocket(unsigned PORT) {
 
     if(bind(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         error("Could not bind socket");
-    }
+    }  
+}
 
-    listen(sock, 1024);
+void OzzyServer::run(){
+    listen(sock, MAX_NUM_SOCKETS);
 
+    pthread_t threads[MAX_NUM_SOCKETS];
+    int i = 0;
     while(1) {
-        int newSocket = accept(sock, NULL, NULL);
-        if (newSocket != -1) {
-            double number = 0;
-            recv(newSocket, &number, sizeof(double),0);
-            printf("%f\n", number); 
+        int pairSock = accept(sock, NULL, NULL);
 
-            double data[N_ELEMENTS];
-            for (int i=0 ;i < N_ELEMENTS; i++) { 
-                data[i] = number + i;
-                cout << data[i] << endl;
+        if (pairSock != -1) {
+            int thr = pthread_create(&threads[i], NULL, workerThread, &pairSock);
+            if (thr != 0) {
+                error("Failed to create thread");
             }
-
-            size_t size = sizeof(double)*N_ELEMENTS;
-            cout << size << endl;
-            send(newSocket, (void*)&size, sizeof(size_t), 0); 
-            send(newSocket, (void*)&data, size, 0); 
-
-            close(newSocket);
+            else {
+                cout << "Create thread ID " << i << endl;
+                i++;
+            }
         }
-      
+
+        if (i >= MAX_NUM_SOCKETS){
+            joinThreadPull(threads);
+            i = 0;
+        }
     }
-    cout << "Close socket" << endl;
+}
+
+void OzzyServer::joinThreadPull(pthread_t* threads){
+    for (int i = 0; i < MAX_NUM_SOCKETS; i++){
+        pthread_join(threads[i], NULL);
+        cout << "Join thread ID " << i << endl;
+    }
+}
+
+void* OzzyServer::workerThread(void* args) {
+    int pairSock = *((int*)args);
+    double number = 0;
+    recv(pairSock, &number, sizeof(double),0);
+    cout << "Worker get " << number << endl;
+
+    sendData(pairSock, number);
+    close(pairSock);
+    pthread_exit(NULL);
+}
+
+void OzzyServer::sendData(int pairSock, double number) {
+    double data[N_ELEMENTS];
+    for (int i=0 ;i < N_ELEMENTS; i++) { 
+        data[i] = number + i;
+    }
+
+    int size = sizeof(double)*N_ELEMENTS;
+    send(pairSock, (void*)&size, sizeof(size_t), 0); 
+    send(pairSock, (void*)&data, size, 0);
 }
