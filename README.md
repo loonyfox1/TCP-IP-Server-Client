@@ -15,3 +15,5 @@ Manually running:
 
 1. server <code>./OzzyServer/bin/main OzzyServer/config.ini</code>
 2. client <code>./OzzyClient/bin/main OzzyClient/config.ini data.bin</code>
+
+Buided with gcc `version 8.1.0 (Ubuntu 8.1.0-5ubuntu1~16.04)`
