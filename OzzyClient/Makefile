@@ -7,7 +7,6 @@ INCLUDE	:= include
 LIB		:= lib
 
 LIBRARIES	:=
-CONFIGFILE := config.ini
 
 ifeq ($(OS),Windows_NT)
 EXECUTABLE	:= main.exe
