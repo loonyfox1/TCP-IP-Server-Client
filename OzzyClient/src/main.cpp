@@ -16,13 +16,12 @@ config_args_t readConfig(string filename);
 int main(int argc, char ** argv) {
 	config_args_t cnfg = readConfig(argv[1]);
 	OzzyClient* client = new OzzyClient(cnfg.port, cnfg.host);
+
 	client->sendRequst(cnfg.number);
 	client->getResult();
-	client->writeResultToFile("data.bin");
+	client->writeResultToFile(argv[2]);
 
 	delete client;
-	cout << "Client done!" << endl;
-
 	return 0;
 }
 
@@ -46,9 +45,7 @@ config_args_t readConfig(string filename){
 			}
 
 			if (identifier == "PORT") cnfg.port = strtod(value.c_str(), &pEnd);
-			else if (identifier == "HOST"){
-				cnfg.host = value;
-			}
+			else if (identifier == "HOST") cnfg.host = value;
 			else if (identifier == "NUMBER") cnfg.number = strtod(value.c_str(), &pEnd);
 		}
 		configfile.close();

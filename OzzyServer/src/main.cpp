@@ -7,13 +7,14 @@ using namespace std;
 
 typedef struct {
 	unsigned port;
+	string ip;
 } config_args_t;
 
 config_args_t readConfig(string filename);
 
 int main(int argc, char ** argv) {
 	config_args_t cnfg = readConfig(argv[1]);
-	OzzyServer* server = new OzzyServer(cnfg.port);
+	OzzyServer* server = new OzzyServer(cnfg.port, cnfg.ip);
 	server->run();
 
 	delete server;
@@ -42,11 +43,15 @@ config_args_t readConfig(string filename){
 			}
 
 			if (identifier == "PORT") cnfg.port = strtod(value.c_str(), &pEnd);
+			else if (identifier == "IP") cnfg.ip = value;
 		}
 		configfile.close();
 		if (cnfg.port == 0)
 			cout << "Warning: " << "Could not read PORT in config file. PORT is default 0" << endl;
-
+		if (cnfg.ip == "") {
+			cout << "Warning: " << "Could not read ip in config file. ip is default 0.0.0.0" << endl;
+			cnfg.ip = "0.0.0.0";
+		}
 		return cnfg;
 	}
 }

@@ -21,7 +21,7 @@ clean:
 	$(RM) $(BIN)/$(EXECUTABLE)
 
 run: all
-	./$(BIN)/$(EXECUTABLE) $(CONFIGFILE) 
+	./$(BIN)/$(EXECUTABLE) 
 
 $(BIN)/$(EXECUTABLE): $(SRC)/*
 	$(CC) $(C_FLAGS) -I$(INCLUDE) -L$(LIB) $^ -o $@ $(LIBRARIES) -g
