@@ -32,10 +32,10 @@ def getNextConfig(port, host, number, i):
     return filename
 
 '''
-3. Comment Server subprocess (next 2 lines) if you want to run server manually
+6. Comment Server subprocess (next 2 lines) if you want to run server manually
 '''
-# server = ("OzzyServer/bin/main", "OzzyServer/config.ini")
-# popenServer = subprocess.Popen(server, stdout=subprocess.PIPE, stderr = subprocess.PIPE)
+server = ("OzzyServer/bin/main", "OzzyServer/config.ini")
+popenServer = subprocess.Popen(server, stdout=subprocess.PIPE, stderr = subprocess.PIPE)
 
 clients = []
 for i in range(NUM_CLIENTS):
